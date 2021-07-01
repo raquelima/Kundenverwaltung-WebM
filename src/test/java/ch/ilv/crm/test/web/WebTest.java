@@ -23,7 +23,7 @@ public class WebTest {
 
 	@Before
 	public void setUp() {
-		System.setProperty("webdriver.chrome.driver", "C:\\Dev\\Chrome-Driver\\chromedriver.exe");
+		System.setProperty("webdriver.chrome.driver", "lib/chromedriver.exe");
 		driver = new ChromeDriver();
 		
 	}
