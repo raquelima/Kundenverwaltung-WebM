@@ -38,6 +38,17 @@
 			<artifactId>thymeleaf</artifactId>
 			<version>3.0.11.RELEASE</version>
 		</dependency>
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-java</artifactId>
+			<version>3.141.59</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.13.2</version>
+
+		</dependency>
 	</dependencies>
 
 	<distributionManagement>
@@ -66,6 +77,7 @@
 							<goal>shade</goal>
 						</goals>
 						<configuration>
+							<shadedArtifactAttached>true</shadedArtifactAttached>
 							<transformers>
 								<transformer
 									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
@@ -85,23 +97,50 @@
 			</plugin>
 
 			<plugin>
-				<groupId>org.sonatype.plugins</groupId>
-				<artifactId>nexus-staging-maven-plugin</artifactId>
-				<version>1.5.1</version>
+				<groupId>io.fabric8</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<version>0.36.1</version>
+
+				<configuration>
+					<verbose>true</verbose>
+
+					<authConfig>
+						<username>raquellima</username>
+						<password>d31cda77-2e70-48a2-a165-30c22d29c741</password>
+					</authConfig>
+
+					<images>
+						<image>
+							<name>raquellima/m154-fallstudie</name>
+							<build>
+								<dockerFileDir>${project.basedir}</dockerFileDir>
+								<assembly>
+									<descriptorRef>artifact</descriptorRef>
+								</assembly>
+								<tags>
+									<tag>latest</tag>
+								</tags>
+							</build>
+						</image>
+					</images>
+				</configuration>
+
 				<executions>
 					<execution>
-						<id>default-deploy</id>
+						<id>build</id>
+						<phase>package</phase>
+						<goals>
+							<goal>build</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>push</id>
 						<phase>deploy</phase>
 						<goals>
-							<goal>deploy</goal>
+							<goal>push</goal>
 						</goals>
 					</execution>
 				</executions>
-				<configuration>
-					<serverId>nexus</serverId>
-					<nexusUrl>http://localhost:8081/nexus/</nexusUrl>
-					<skipStaging>true</skipStaging>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>
